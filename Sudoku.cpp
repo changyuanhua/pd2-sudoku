@@ -96,7 +96,7 @@ void Sudoku::print(int G[9][9])
 {
 	int i,j;
 	cout << p << endl;
-	if(p==0)
+	if(p==0||p==2)
 		return;				
 	output(G);
 }
