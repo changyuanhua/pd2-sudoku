@@ -28,12 +28,16 @@ void Sudoku::output(int D[][9])
 void Sudoku::readIn()
 {
 	int i,j;
-	int F[9][9]={0};
+	int H[9][9]={0};
 	for(i=0;i<9;i++)
 		for(j=0;j<9;j++)
-			cin>>A[i][j];
+		{
+			cin>>H[i][j];
+			A[i][j]=H[i][j];
+			K[i][j]=H[i][j];
+		}
 }
-bool Sudoku::check(int A[][9], int nextblank, int num)
+bool Sudoku::check(int nextblank, int num)
 {
 	int i;
 	int col=nextblank%9;
@@ -46,7 +50,7 @@ bool Sudoku::check(int A[][9], int nextblank, int num)
 			return false;
 	return true;
 }
-int Sudoku::findblank(int A[][9],int blank)
+int Sudoku::findblank(int blank)
 {
 	int nextblank;
 	for(nextblank=blank;nextblank<81;nextblank++)
@@ -58,12 +62,12 @@ int Sudoku::findblank(int A[][9],int blank)
 }	
 void Sudoku::solve()
 {
-	solvesoduku(A,0);
+	solvesudoku(0);
 	print(C);
 }
-int Sudoku::solvesoduku(int A[][9],int blank)
+int Sudoku::solvesudoku(int blank)
 {
-    int nextblank=findblank(A,blank);
+    int nextblank=findblank(blank);
 	int i,j,num;
 	if(p>1)
 		return 0;
@@ -77,10 +81,10 @@ int Sudoku::solvesoduku(int A[][9],int blank)
 	}
 	for(num=1;num<=9;num++)
 	{
-		if(check(A,nextblank,num))
+		if(check(nextblank,num))
 		{
 			A[nextblank/9][nextblank%9]=num;
-			if(solve(A,nextblank+1)==1)
+			if(solvesudoku(nextblank+1)==1)
 				return 1;
 			A[nextblank/9][nextblank%9]=0;
 		}
@@ -88,27 +92,27 @@ int Sudoku::solvesoduku(int A[][9],int blank)
 	}
 	return 0;
 }
-void Sudoku::print(int A[][9])
+void Sudoku::print(int G[9][9])
 {
 	int i,j;
 	cout << p << endl;
 	if(p==0)
-		return 0;				
-	output(A);
+		return;				
+	output(G);
 }
 void Sudoku::changeNum(int a, int b)
 {
 	int i, j, B[9][9]={0};
 	for(i=0;i<9;i++)
 		for(j=0;j<9;j++)
-			B[i][j]=A[i][j];
+			B[i][j]=K[i][j];
 	for(i=0;i<9;i++)
 		for(j=0;j<9;j++)
 		{
 			if(B[i][j]==a)
-				A[i][j]=b;	 	  
+				K[i][j]=b;	 	  
 			if(B[i][j]==b)
-				A[i][j]=a;
+				K[i][j]=a;
 	    }
 }
 void Sudoku::changeRow(int a, int b)
@@ -123,21 +127,21 @@ void Sudoku::changeRow(int a, int b)
 		 {
 			 if(a+b==1)
 			 {
-				 B[0][j]=A[k+6][j];
-				 A[k+6][j]=A[k][j];
-				 A[k][j]=B[0][j];
+				 B[0][j]=K[k+6][j];
+				 K[k+6][j]=K[k][j];
+				 K[k][j]=B[0][j];
 			 }	   
 			 else if(a+b==2)
 			 {		   
-				 B[0][j]=A[k+6][j];
-				 A[k+6][j]=A[k][j]; 
-				 A[k][j]=B[0][j];
+				 B[0][j]=K[k+6][j];
+				 K[k+6][j]=K[k][j]; 
+				 K[k][j]=B[0][j];
 			 }			 
 			 else if(a+b==3)
 			 {
-				 B[0][j]=A[k+6][j];
-				 A[k+6][j]=A[k+3][j];
-				 A[k+3][j]=B[0][j];
+				 B[0][j]=K[k+6][j];
+				 K[k+6][j]=K[k+3][j];
+				 K[k+3][j]=B[0][j];
 			 }
 		 }
 	 }      	 
@@ -154,22 +158,22 @@ void Sudoku::changeCol(int a,int b)
 			{	
 				if(a+b==1)
 				{
-					B[i][0]=A[i][k+3];						
-					A[i][k+3]=A[i][k];
-					A[i][k]=B[i][0];
+					B[i][0]=K[i][k+3];						
+					K[i][k+3]=K[i][k];
+					K[i][k]=B[i][0];
 		
 				}	
 				else if(a+b==2)	
 				{
-					B[i][0]=A[i][k+6];
-					A[i][k+6]=A[i][k];
-					A[i][k]=B[i][0];
+					B[i][0]=K[i][k+6];
+					K[i][k+6]=K[i][k];
+					K[i][k]=B[i][0];
 				}
 				else if(a+b==3)
 				{    
-					B[i][0]=A[i][k+6];
-					A[i][k+6]=A[i][k+3];
-					A[i][k+3]=B[i][0];
+					B[i][0]=K[i][k+6];
+					K[i][k+6]=K[i][k+3];
+					K[i][k+3]=B[i][0];
 				}
 			}   
 		}
@@ -179,16 +183,16 @@ void Sudoku::rotate(int n)
 	int i,j,k, B[9][9]={0};
 	for(i=0;i<9;i++)
 		for(j=0;j<9;j++)
-			B[i][j]=A[i][j];	
+			B[i][j]=K[i][j];	
 	for(i=0;i<9;i++)
 		for(j=0;j<9;j++)
 		{
 			if(n%4==2) 
-				A[j][8-i]=B[i][j];
+				K[j][8-i]=B[i][j];
 			else if(n%4==3)
-				A[8-i][8-j]=B[i][j];
+				K[8-i][8-j]=B[i][j];
 			else if(n%4==0)
-				A[8-j][i]=B[i][j]; 
+				K[8-j][i]=B[i][j]; 
 		}
 }
 void Sudoku::flip(int n)
@@ -196,29 +200,29 @@ void Sudoku::flip(int n)
 	int i,j,k, B[9][9]={0};
     for(i=0;i<9;i++)
 		for(j=0;j<9;j++)
-			B[i][j]=A[i][j];	
+			B[i][j]=K[i][j];	
 	for(i=0;i<9;i++)
 		for(j=0;j<9;j++)
 		{
 			if(n==0)
 			{ 
-				A[8-i][j]=B[i][j];}
+				K[8-i][j]=B[i][j];}
 			else if(n==1){
-				A[i][8-j]=B[i][j];}
+				K[i][8-j]=B[i][j];}
 		}
 }	
 void Sudoku::transform()
 {
     readIn();
     change();
-	output(A);
+	output(K);
 }
 void Sudoku::change()
 {
-	srand((Null)):
-	changeNun(rand()%9+1,rand()%9+1);
-	changerow(rand()%3,rand()%3);
-	changerow(rand()%3,rand()%3);
+	srand(time(NULL));
+	changeNum(rand()%9+1,rand()%9+1);
+	changeRow(rand()%3,rand()%3);
+	changeCol(rand()%3,rand()%3);
 	rotate(rand()%101);
 	flip(rand()%2);
 }
