@@ -20,9 +20,9 @@ void Sudoku::output(int D[][9])
 		for(j=0;j<9;j++)
 		{
 			if(j!=8)
-				cout<<" "<< D[i][j] ;
+				cout<< D[i][j] <<" ";
 			else
-				cout<<" "<< D[i][j]<<endl;			
+				cout<< D[i][j]<<endl;			
 		}
 }
 void Sudoku::readIn()
@@ -33,8 +33,8 @@ void Sudoku::readIn()
 		for(j=0;j<9;j++)
 		{
 			cin>>H[i][j];
-			A[i][j]=H[i][j];
 			K[i][j]=H[i][j];
+			A[i][j]=H[i][j];
 		}
 }
 bool Sudoku::check(int nextblank, int num)
@@ -204,19 +204,12 @@ void Sudoku::flip(int n)
 	for(i=0;i<9;i++)
 		for(j=0;j<9;j++)
 		{
-			if(n==0)
-			{ 
-				K[8-i][j]=B[i][j];}
+			if(n==0) 
+				K[8-i][j]=B[i][j];
 			else if(n==1){
 				K[i][8-j]=B[i][j];}
 		}
 }	
-void Sudoku::transform()
-{
-    readIn();
-    change();
-	output(K);
-}
 void Sudoku::change()
 {
 	srand(time(NULL));
@@ -225,4 +218,9 @@ void Sudoku::change()
 	changeCol(rand()%3,rand()%3);
 	rotate(rand()%101);
 	flip(rand()%2);
+}
+void Sudoku::transform()
+{
+	change();
+	output(K);
 }
