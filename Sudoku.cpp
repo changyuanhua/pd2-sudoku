@@ -64,6 +64,10 @@ int Sudoku::findblank(int blank)
 }	
 void Sudoku::solve()
 {
+    int i,j;
+	 for(i=0;i<9;i++)
+		 for(j=0;j<9;j++)
+			 A[i][j]=K[i][j];
 	if(firstcheck()==1)
 		return ;
 	solvesudoku(0);
@@ -237,11 +241,11 @@ void Sudoku::rotate(int n)
 	for(i=0;i<9;i++)
 		for(j=0;j<9;j++)
 		{
-			if(n%4==2) 
+			if(n%4==1) 
 				K[j][8-i]=B[i][j];
-			else if(n%4==3)
+			else if(n%4==2)
 				K[8-i][8-j]=B[i][j];
-			else if(n%4==0)
+			else if(n%4==3)
 				K[8-j][i]=B[i][j]; 
 		}
 }
