@@ -15,7 +15,7 @@ void Sudoku::giveQuestion()
 }
 void Sudoku::output(int D[][9])
 {
-    int i,j;
+	int i,j;
 	for(i=0;i<9;i++)
 		for(j=0;j<9;j++)
 		{
@@ -35,18 +35,20 @@ void Sudoku::readIn()
 			cin>>H[i][j];
 			K[i][j]=H[i][j];
 			A[i][j]=H[i][j];
+			Q[i][j]=H[i][j];
+			T[i][j]=H[i][j];
 		}
 }
-bool Sudoku::check(int nextblank, int num)
+bool Sudoku::check(int O[9][9],int nextblank, int num)
 {
 	int i;
 	int col=nextblank%9;
 	int row=nextblank/9;
 	for(i=0;i<9;i++)
-		if(A[row][i]==num||A[i][col]==num)
+		if(O[row][i]==num||O[i][col]==num)
 			return false;	
 	for(i=0;i<3;i++)
-		if(A[(row/3)*3][i+(col/3)*3]==num||A[i+(row/3)*3][(col/3)*3]==num)
+		if(O[(row/3)*3][i+(col/3)*3]==num||O[i+(row/3)*3][(col/3)*3]==num)
 			return false;
 	return true;
 }
@@ -62,46 +64,78 @@ int Sudoku::findblank(int blank)
 }	
 void Sudoku::solve()
 {
-	int i,j;
-	for(i=0;i<9;i++)
-		for(j=0;j<9;j++)
-		{
-			if(A[i][j]!=0)
-            {
-				if(!check(i*9+j,A[i][j]))
-				{
-					cout<<0<<endl;
-					return ;
-				}
-			}
-		}	
+	if(firstcheck()==1)
+		return ;
 	solvesudoku(0);
 	print(C);
 }
+int Sudoku::firstcheck()
+{
+	   int i,j;
+	      for(i=0;i<9;i++)
+			  for(j=0;j<9;j++)
+			  {
+				  if(T[i][j]!=0)
+				  {
+					  Q[i][j]=-1;
+					  if(!check(Q,i*9+j,T[i][j]))
+					  {
+						  cout<<0<<endl;
+						  return 1;
+					  }
+					  Q[i][j]=T[i][j];
+				  }
+			  }
+		  return 0;
+}
+int Sudoku::finalcheck()
+{
+	int i,j;
+	for(i=0;i<9;i++)
+		for(j=0;j<9;j++)
+			V[i][j]=A[i][j];
+	S[i][j]=A[i][j];
+	for(i=0;i<9;i++)
+		for(j=0;j<9;j++)
+		{
+			V[i][j]=-1;
+			if(!check(V,i*9+j,S[i][j]))																			              
+			{				
+				cout<<0<<endl;
+				return 1;
+			}
+			V[i][j]=S[i][j];
+		}
+	return 0;
+}
 int Sudoku::solvesudoku(int blank)
 {
-    int nextblank=findblank(blank);
+	int nextblank=findblank(blank);
 	int i,j,num;
 	if(p>1)
 		return 0;
 	if(nextblank==81)
 	{
-		p++;
-		for (i=0; i<9; i++)
-			for (j=0; j<9; j++)
-				C[i][j]=A[i][j];
-		return 0;
+		if(firstcheck()==0)
+		{
+			p++;
+			for (i=0; i<9; i++)
+				for (j=0; j<9; j++)
+					C[i][j]=A[i][j];
+			return 0;
+		}
+		else 
+			return 0;
 	}
 	for(num=1;num<=9;num++)
 	{
-		if(check(nextblank,num))
+		if(check(A,nextblank,num))
 		{
 			A[nextblank/9][nextblank%9]=num;
 			if(solvesudoku(nextblank+1)==1)
 				return 1;
 			A[nextblank/9][nextblank%9]=0;
 		}
-
 	}
 	return 0;
 }
@@ -126,38 +160,38 @@ void Sudoku::changeNum(int a, int b)
 				K[i][j]=b;	 	  
 			if(B[i][j]==b)
 				K[i][j]=a;
-	    }
+		}
 }
 void Sudoku::changeRow(int a, int b)
 {
-    int i,j,k, B[9][9]={0};
-   	for(k=0;k<3;k++)
-	 for(j=0;j<9;j++)
-	 { 
-		 if(a==b)
-			 break;
-		 else
-		 {
-			 if(a+b==1)
-			 {
-				 B[0][j]=K[k+6][j];
-				 K[k+6][j]=K[k][j];
-				 K[k][j]=B[0][j];
-			 }	   
-			 else if(a+b==2)
-			 {		   
-				 B[0][j]=K[k+6][j];
-				 K[k+6][j]=K[k][j]; 
-				 K[k][j]=B[0][j];
-			 }			 
-			 else if(a+b==3)
-			 {
-				 B[0][j]=K[k+6][j];
-				 K[k+6][j]=K[k+3][j];
-				 K[k+3][j]=B[0][j];
-			 }
-		 }
-	 }      	 
+	int i,j,k, B[9][9]={0};
+	for(k=0;k<3;k++)
+		for(j=0;j<9;j++)
+		{ 
+			if(a==b)
+				break;
+			else
+			{
+				if(a+b==1)
+				{
+					B[0][j]=K[k+6][j];
+					K[k+6][j]=K[k][j];
+					K[k][j]=B[0][j];
+				}	   
+				else if(a+b==2)
+				{		   
+					B[0][j]=K[k+6][j];
+					K[k+6][j]=K[k][j]; 
+					K[k][j]=B[0][j];
+				}			 
+				else if(a+b==3)
+				{
+					B[0][j]=K[k+6][j];
+					K[k+6][j]=K[k+3][j];
+					K[k+3][j]=B[0][j];
+				}
+			}
+		}      	 
 }
 void Sudoku::changeCol(int a,int b)
 {
@@ -171,10 +205,12 @@ void Sudoku::changeCol(int a,int b)
 			{	
 				if(a+b==1)
 				{
-					B[i][0]=K[i][k+3];						
+					B[i][0]=K[i][k+3];
 					K[i][k+3]=K[i][k];
 					K[i][k]=B[i][0];
-		
+
+
+				
 				}	
 				else if(a+b==2)	
 				{
@@ -211,7 +247,7 @@ void Sudoku::rotate(int n)
 void Sudoku::flip(int n)
 {
 	int i,j,k, B[9][9]={0};
-    for(i=0;i<9;i++)
+	for(i=0;i<9;i++)
 		for(j=0;j<9;j++)
 			B[i][j]=K[i][j];	
 	for(i=0;i<9;i++)

@@ -9,8 +9,10 @@ class Sudoku
 		void output(int D[][9]);
 		void readIn();
 		void solve();
+		int finalcheck();
+		int firstcheck();
 		int solvesudoku(int blank);
-		bool check(int nextblank,int num);
+		bool check(int O[9][9],int nextblank,int num);
 		int findblank(int blank);
 		void print(int G[9][9]);
 		void changeNum(int a, int b);
@@ -21,6 +23,6 @@ class Sudoku
 		void transform();
 		void change();
 	private:
-		int K[9][9],C[9][9],A[9][9];
+		int S[9][9],V[9][9],T[9][9],Q[9][9],K[9][9],C[9][9],A[9][9];
 		int p;
 };				
