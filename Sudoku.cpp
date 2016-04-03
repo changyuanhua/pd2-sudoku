@@ -93,15 +93,16 @@ int Sudoku::finalcheck()
 	int i,j;
 	for(i=0;i<9;i++)
 		for(j=0;j<9;j++)
+		{
 			V[i][j]=A[i][j];
-	S[i][j]=A[i][j];
+        	S[i][j]=A[i][j];
+		}
 	for(i=0;i<9;i++)
 		for(j=0;j<9;j++)
 		{
 			V[i][j]=-1;
 			if(!check(V,i*9+j,S[i][j]))																			              
-			{				
-				cout<<0<<endl;
+			{
 				return 1;
 			}
 			V[i][j]=S[i][j];
@@ -116,7 +117,7 @@ int Sudoku::solvesudoku(int blank)
 		return 0;
 	if(nextblank==81)
 	{
-		if(firstcheck()==0)
+		if(finalcheck()==0)
 		{
 			p++;
 			for (i=0; i<9; i++)
