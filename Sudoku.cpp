@@ -62,6 +62,19 @@ int Sudoku::findblank(int blank)
 }	
 void Sudoku::solve()
 {
+	int i,j;
+	for(i=0;i<9;i++)
+		for(j=0;j<9;j++)
+		{
+			if(A[i][j]!=0)
+            {
+				if(!check(i*9+j,A[i][j]))
+				{
+					cout<<0<<endl;
+					return ;
+				}
+			}
+		}	
 	solvesudoku(0);
 	print(C);
 }
